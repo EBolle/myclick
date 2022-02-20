@@ -9,20 +9,22 @@ def cli():
 
 
 @click.command()
+@click.option('--launch/--no-launch', default=False)
 @click.argument('input', type=click.File(mode='r', encoding='utf-8'))
 @click.argument('output', type=click.File(mode='w', encoding='utf-8'), default='-')
-def clean_html(input, output):
+def clean_html(launch, input, output):
     """
     Takes in a HTML file and returns a cleaned HTML file which can be easily ran through a spell checker, hence
-    the <br> elements remain.
+    the <p> and <br> elements remain. 
 
     input: path to HTML file\n
-    output: name of the cleaned HTML file, the default is stdout
+    output: name of the to be created cleaned HTML file, the default is stdout
     """
-    clean_pattern = re.compile(r'(</?[adehip].*?>|<code>.*?</code>|\n|{%.*?%})', flags=re.DOTALL|re.MULTILINE)
-    return_html = re.sub(clean_pattern, "", input.read())
+    clean_pattern = re.compile(r'(</?[adehi].*?>|<pre>.*?</pre>|\n|{%.*?%})', flags=re.DOTALL|re.MULTILINE)
+    output.write(re.sub(clean_pattern, "", input.read()))  
 
-    output.write(return_html)
+    if launch:
+        click.launch(output.name)
 
 
 cli.add_command(clean_html)
