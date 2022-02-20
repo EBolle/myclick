@@ -9,7 +9,7 @@ def cli():
 
 
 @click.command()
-@click.option('--launch/--no-launch', default=False)
+@click.option('--launch/--no-launch', default=False, help="Launches the cleaned HTML file in your default browser.")
 @click.argument('input', type=click.File(mode='r', encoding='utf-8'))
 @click.argument('output', type=click.File(mode='w', encoding='utf-8'), default='-')
 def clean_html(launch, input, output):
