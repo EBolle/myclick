@@ -4,7 +4,7 @@ This is my personal CLI which I have developed to easily maintain the content of
 
 ## Usage
 
-Although the commands are specific to my use cases, they might be useful to you as well. After you cloned the repo it is best to create a virtual environment before executing the follow command.
+Although the commands are specific to my use cases, they might be useful to you as well. After you cloned the repo it is best to create a virtual environment before executing the following command.
 
 ```bash
 pip install --editable .
