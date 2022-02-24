@@ -1,7 +1,8 @@
 import pytest
 
-def test_re():
+
+def test_clean_pattern():
     """
-    Tests whether the regular expression actually matches what we think it should match.
+    Tests whether the clean_pattern regexp matches what we think it should match.
     """
     pass
