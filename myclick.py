@@ -1,9 +1,10 @@
+from email.policy import default
 import re
 from collections import defaultdict
 
 import click
 
-from writing import _paragraph_counter, _newline_locator
+from writing import _paragraph_words, _newline_locator
 
 
 @click.group()
@@ -62,8 +63,10 @@ def word_counter(input):
     clean_text = re.sub(r'(\n|[.,!])', '', tag_stripped_text, flags=re.IGNORECASE|re.DOTALL)
 
     p_pattern = re.compile(r'(<p\s+.*?>)\s+(.*?)</p>', flags=re.IGNORECASE|re.DOTALL)
+    p_lists = _paragraph_words(p_pattern, clean_text)
+    words_per_paragraph = {idx: len(p_list) for idx, p_list in enumerate(p_lists, start=1)}
 
-    for key, value in _paragraph_counter(p_pattern, clean_text).items():
+    for key, value in words_per_paragraph.items():
         click.echo(f"<p> {key}: {value} words")
 
 

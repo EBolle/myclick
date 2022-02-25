@@ -26,9 +26,9 @@ def _newline_locator(text: str, match_start_list: list) -> list:
     return newline_list
 
 
-def _paragraph_counter(re_pattern, text: str) -> list:
+def _paragraph_words(re_pattern, text: str) -> list:
     """
-    Returns a list with counts per paragraph in a the HTMl raw text.
+    Returns a list of list with words per paragraph in the HTMl raw text.
     """
     p_lists = []
 
@@ -37,4 +37,4 @@ def _paragraph_counter(re_pattern, text: str) -> list:
         no_empty_string_list = [word for word in temp_list if word] 
         p_lists.append(no_empty_string_list)
 
-    return {idx: len(p_list) for idx, p_list in enumerate(p_lists, start=1)}
+    return p_lists    
