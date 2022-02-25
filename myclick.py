@@ -1,8 +1,9 @@
 import re
+from collections import defaultdict
 
 import click
 
-from writing import _newline_locator
+from writing import _paragraph_counter, _newline_locator
 
 
 @click.group()
@@ -49,6 +50,23 @@ def ly_words(input):
     for lineno, (sentence, word) in zip(newlines, matches):
         click.echo(f"{lineno} ({word}): {sentence}")
 
+@click.command()
+@click.argument('input', type=click.File(mode='r', encoding='utf-8'))
+def word_counter(input):
+    """
+    Returns the number of words per paragraph. Useful to get an idea of the flow of your post, 
+    e.g., is there too much text in certain areas of the post?  
+    """
+    text = input.read()
+    tag_stripped_text = re.sub(r'</?\s*(a|br|em|strong|sup).*?>', '', text, flags=re.IGNORECASE|re.DOTALL)
+    clean_text = re.sub(r'(\n|[.,!])', '', tag_stripped_text, flags=re.IGNORECASE|re.DOTALL)
+
+    p_pattern = re.compile(r'(<p\s+.*?>)\s+(.*?)</p>', flags=re.IGNORECASE|re.DOTALL)
+
+    for key, value in _paragraph_counter(p_pattern, clean_text).items():
+        click.echo(f"<p> {key}: {value} words")
+
 
 cli.add_command(clean_html)
 cli.add_command(ly_words)
+cli.add_command(word_counter)

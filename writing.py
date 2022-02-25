@@ -1,5 +1,7 @@
 """This module contains all the (helper) functions to improve your writing, which we assume is tight."""
 
+import re
+
 
 def _newline_locator(text: str, match_start_list: list) -> list:    
     """
@@ -22,3 +24,17 @@ def _newline_locator(text: str, match_start_list: list) -> list:
             match_start_list_copy.pop(0)
             
     return newline_list
+
+
+def _paragraph_counter(re_pattern, text: str) -> list:
+    """
+    Returns a list with counts per paragraph in a the HTMl raw text.
+    """
+    p_lists = []
+
+    for match in re.finditer(re_pattern, text):
+        temp_list = match.group(2).split(" ")
+        no_empty_string_list = [word for word in temp_list if word] 
+        p_lists.append(no_empty_string_list)
+
+    return {idx: len(p_list) for idx, p_list in enumerate(p_lists, start=1)}
