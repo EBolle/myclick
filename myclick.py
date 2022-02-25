@@ -70,6 +70,34 @@ def word_counter(input):
         click.echo(f"<p> {key}: {value} words")
 
 
+@click.command()
+@click.argument('input', type=click.File(mode='r', encoding='utf-8'))
+@click.option('--mincount', default=5, help="Minimum number of occurences in the file.")
+def top_n_words(input, mincount):
+    """
+    Returns the most prevalent words in the HTML input. This may be useful to detect unconsious
+    preferences for certain words, e.g., 'I', 'me', or 'also'.
+    """
+    text = input.read()
+    tag_stripped_text = re.sub(r'</?\s*(a|br|em|strong|sup).*?>', '', text, flags=re.IGNORECASE|re.DOTALL)
+    clean_text = re.sub(r'(\n|[.,!])', '', tag_stripped_text, flags=re.IGNORECASE|re.DOTALL)
+
+    p_pattern = re.compile(r'(<p\s+.*?>)\s+(.*?)</p>', flags=re.IGNORECASE|re.DOTALL)
+    p_lists = _paragraph_words(p_pattern, clean_text)
+
+    word_counter = defaultdict(int)
+
+    for p_list in p_lists:
+        for word in p_list:
+            word_counter[word] += 1
+
+    sorted_word_counter = {key: value for key, value in sorted(word_counter.items(), key=lambda x: x[1], reverse=True) if value >= mincount}
+
+    for key, value in sorted_word_counter.items():
+        click.echo(f"{key}: {value}")
+
+
 cli.add_command(clean_html)
 cli.add_command(ly_words)
 cli.add_command(word_counter)
+cli.add_command(top_n_words)
