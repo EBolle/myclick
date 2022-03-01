@@ -1,15 +1,9 @@
-from email.policy import default
 import re
 from collections import defaultdict
 
 import click
 
-from writing import _paragraph_words, _newline_locator
-
-
-@click.group()
-def cli():
-    pass
+from myclick.writing.utils import _paragraph_words, _newline_locator
 
 
 @click.command()
@@ -28,6 +22,7 @@ def clean_html(launch, input, output):
 
     if launch:
         click.launch(output.name)
+
 
 @click.command()
 @click.argument('input', type=click.File(mode='r', encoding='utf-8'))
@@ -50,6 +45,7 @@ def ly_words(input):
 
     for lineno, (sentence, word) in zip(newlines, matches):
         click.echo(f"{lineno} ({word}): {sentence}")
+
 
 @click.command()
 @click.argument('input', type=click.File(mode='r', encoding='utf-8'))
@@ -95,9 +91,3 @@ def top_n_words(input, mincount):
 
     for key, value in sorted_word_counter.items():
         click.echo(f"{key}: {value}")
-
-
-cli.add_command(clean_html)
-cli.add_command(ly_words)
-cli.add_command(word_counter)
-cli.add_command(top_n_words)
