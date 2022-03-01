@@ -5,7 +5,7 @@ from collections import defaultdict
 
 import click
 
-from myclick.writing.utils import _paragraph_words, _newline_locator
+from myclick.writing.utils import _clean_text, _paragraph_words, _newline_locator
 
 
 @click.command()
@@ -55,12 +55,9 @@ def word_counter(input):
     Returns the number of words per paragraph. Useful to get an idea of the flow of your post, 
     e.g., is there too much text in certain areas of the post?  
     """
-    text = input.read()
-    tag_stripped_text = re.sub(r'</?\s*(a|br|em|strong|sup).*?>', '', text, flags=re.IGNORECASE|re.DOTALL)
-    clean_text = re.sub(r'(\n|[.,!])', '', tag_stripped_text, flags=re.IGNORECASE|re.DOTALL)
+    clean_text = _clean_text(input.read())
+    p_lists = _paragraph_words(clean_text)
 
-    p_pattern = re.compile(r'(<p\s+.*?>)\s+(.*?)</p>', flags=re.IGNORECASE|re.DOTALL)
-    p_lists = _paragraph_words(p_pattern, clean_text)
     words_per_paragraph = {idx: len(p_list) for idx, p_list in enumerate(p_lists, start=1)}
 
     for key, value in words_per_paragraph.items():
@@ -75,12 +72,8 @@ def top_n_words(input, mincount):
     Returns the most prevalent words in the HTML input. This may be useful to detect unconsious
     preferences for certain words, e.g., 'I', 'me', or 'also'.
     """
-    text = input.read()
-    tag_stripped_text = re.sub(r'</?\s*(a|br|em|strong|sup).*?>', '', text, flags=re.IGNORECASE|re.DOTALL)
-    clean_text = re.sub(r'(\n|[.,!])', '', tag_stripped_text, flags=re.IGNORECASE|re.DOTALL)
-
-    p_pattern = re.compile(r'(<p\s+.*?>)\s+(.*?)</p>', flags=re.IGNORECASE|re.DOTALL)
-    p_lists = _paragraph_words(p_pattern, clean_text)
+    clean_text = _clean_text(input.read())
+    p_lists = _paragraph_words(clean_text)
 
     word_counter = defaultdict(int)
 

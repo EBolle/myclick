@@ -24,15 +24,26 @@ def _newline_locator(text: str, match_start_list: list) -> list:
     return newline_list
 
 
-def _paragraph_words(re_pattern, text: str) -> list:
+def _paragraph_words(text: str) -> list:
     """
     Returns a list of list with words per paragraph in the HTMl raw text.
     """
+    p_pattern = re.compile(r'(<p\s+.*?>)\s+(.*?)</p>', flags=re.IGNORECASE|re.DOTALL)
     p_lists = []
 
-    for match in re.finditer(re_pattern, text):
+    for match in re.finditer(p_pattern, text):
         temp_list = match.group(2).split(" ")
         no_empty_string_list = [word for word in temp_list if word] 
         p_lists.append(no_empty_string_list)
 
     return p_lists    
+
+
+def _clean_text(text: str) -> str:
+    """
+    Removes all but the paragraph tags and the actual content in the HTML raw text.
+    """
+    tag_stripped_text = re.sub(r'</?\s*(a|br|em|strong|sup).*?>', '', text, flags=re.IGNORECASE|re.DOTALL)
+    clean_text = re.sub(r'(\n|[.,!])', '', tag_stripped_text, flags=re.IGNORECASE|re.DOTALL)
+
+    return clean_text
