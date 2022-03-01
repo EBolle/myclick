@@ -13,9 +13,9 @@ from myclick.writing.utils import _paragraph_words, _newline_locator
 @click.argument('output', type=click.File(mode='w', encoding='utf-8'), default='temp.html')
 def clean_html(input, output):
     """
-    Strips most of an HTML file and opens directly in your default browser so you can easily run a spell check, 
+    Strips most of an HTML file and opens directly in your default browser so you can easily run a spell check.
+
     input: path to HTML file\n
-    output: name of the to be created cleaned HTML file, the default is stdout
     """
     clean_pattern = re.compile(r'(</?[adehi].*?>|<pre>.*?</pre>|\n|{%.*?%})', flags=re.DOTALL|re.MULTILINE)
     output.write(re.sub(clean_pattern, "", input.read()))  
