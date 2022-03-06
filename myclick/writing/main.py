@@ -1,7 +1,7 @@
-import os
 import re
 import time
 from collections import defaultdict
+from pathlib import Path
 
 import click
 
@@ -10,19 +10,21 @@ from myclick.writing.utils import _clean_text, _paragraph_words, _newline_locato
 
 @click.command()
 @click.argument('input', type=click.File(mode='r', encoding='utf-8'))
-@click.argument('output', type=click.File(mode='w', encoding='utf-8'), default='temp.html')
-def clean_html(input, output):
+def clean_html(input):
     """
     Strips most of an HTML file and opens directly in your default browser so you can easily run a spell check.
 
     input: path to HTML file\n
     """
     clean_pattern = re.compile(r'(</?[adehi].*?>|<pre>.*?</pre>|\n|{%.*?%})', flags=re.DOTALL|re.MULTILINE)
-    output.write(re.sub(clean_pattern, "", input.read()))  
+
+    Path('_temp.html').touch()
+    with open('_temp.html', mode='w') as output:
+        output.write(re.sub(clean_pattern, "", input.read())) 
 
     click.launch(output.name)
     time.sleep(0.5)    
-    os.remove('temp.html')
+    Path('_temp.html').unlink()
 
 
 @click.command()
