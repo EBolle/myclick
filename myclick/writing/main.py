@@ -16,7 +16,7 @@ def clean_html(input):
 
     input: path to HTML file\n
     """
-    clean_pattern = re.compile(r'(</?[adehi].*?>|<pre>.*?</pre>|\n|{%.*?%})', flags=re.DOTALL|re.MULTILINE)
+    clean_pattern = re.compile(r'(</?[adehi][^>]*>|<pre>.*?</pre>|\n|{%[^%}]*%})', flags=re.DOTALL)
 
     Path('_temp.html').touch()
     with open('_temp.html', mode='w') as output:
